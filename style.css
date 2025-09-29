@@ -31,11 +31,6 @@
   --color-orange-500-rgb: 168, 75, 47;
   --color-orange-400-rgb: 230, 129, 97;
 
-  --color-bg-1: rgba(59, 130, 246, 0.08);
-  --color-bg-2: rgba(245, 158, 11, 0.08);
-  --color-bg-3: rgba(34, 197, 94, 0.08);
-  --color-bg-4: rgba(239, 68, 68, 0.08);
-
   --color-background: var(--color-cream-50);
   --color-surface: var(--color-cream-100);
   --color-text: var(--color-charcoal-700);
@@ -182,40 +177,6 @@ body {
   box-shadow: 0 0 0 3px rgba(var(--color-teal-500-rgb), 0.2);
 }
 
-.form-hint {
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
-  margin-top: 0.25rem;
-  font-style: italic;
-}
-
-.radio-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.radio-option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.radio-option input[type="radio"] {
-  accent-color: var(--color-accent-primary);
-}
-
-.effort-description {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  background: var(--color-bg-1);
-  border-radius: var(--border-radius-sm);
-  font-size: 0.85rem;
-  color: var(--color-text);
-  font-style: italic;
-}
-
 .btn {
   padding: 12px 24px;
   border: none;
@@ -252,14 +213,6 @@ body {
   background: var(--color-teal-600);
 }
 
-.btn-success {
-  background: var(--color-success);
-}
-
-.btn-success:hover {
-  background: rgba(22, 163, 74, 1);
-}
-
 .card {
   background: var(--color-surface);
   border-radius: var(--border-radius-md);
@@ -273,12 +226,6 @@ body {
   margin-bottom: 1rem;
   font-weight: 700;
   color: var(--color-text);
-}
-
-.subtitle {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 1.5rem;
 }
 
 .results-grid {
@@ -324,104 +271,6 @@ body {
   font-weight: 700;
   font-size: 1.25rem;
   color: var(--color-success);
-}
-
-/* Estilos específicos para la calculadora de series */
-.series-result-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.weight-display {
-  text-align: center;
-}
-
-.weight-value {
-  font-size: 3rem;
-  font-weight: 900;
-  color: var(--color-accent-primary);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.5rem;
-}
-
-.weight-info {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
-  font-style: italic;
-}
-
-.series-calculation-details {
-  display: grid;
-  gap: 1rem;
-  width: 100%;
-  max-width: 400px;
-}
-
-.calc-detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: var(--color-bg-1);
-  border-radius: var(--border-radius-sm);
-  border-left: 3px solid var(--color-accent-primary);
-}
-
-.detail-label {
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.detail-value {
-  font-weight: 700;
-  color: var(--color-success);
-}
-
-.series-parameters {
-  background: var(--color-bg-2);
-  padding: 1rem;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid var(--color-warning);
-  margin-bottom: 1rem;
-}
-
-.series-table {
-  overflow-x: auto;
-}
-
-.series-table table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.series-table th,
-.series-table td {
-  padding: 0.75rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.series-table th {
-  background: var(--color-accent-primary);
-  color: var(--color-white);
-  font-weight: 600;
-}
-
-.series-table tbody tr:nth-child(even) {
-  background: var(--color-bg-1);
-}
-
-.series-table tbody tr:hover {
-  background: var(--color-bg-3);
-}
-
-.series-table .current-row {
-  background: var(--color-bg-3) !important;
-  border: 2px solid var(--color-success);
 }
 
 .info-card {
@@ -486,14 +335,6 @@ body {
   font-weight: 600;
   color: var(--color-text);
   text-align: center;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 2rem;
 }
 
 .method-comparison {
@@ -611,8 +452,7 @@ body {
 
   .tab-btn {
     font-size: 0.8rem;
-    min-width: 80px;
-    padding: 10px 8px;
+    min-width: 100px;
   }
 
   .results-grid {
@@ -639,34 +479,11 @@ body {
     flex-direction: column;
     margin-bottom: 1rem;
   }
-
-  .info-grid {
-    flex-direction: column;
-  }
-
-  .weight-value {
-    font-size: 2.5rem;
-  }
-
-  .series-calculation-details {
-    max-width: 100%;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .action-buttons .btn {
-    width: 100%;
-    max-width: 300px;
-  }
 }
 
 @media (max-width: 480px) {
   .tab-btn {
-    padding: 8px 6px;
-    font-size: 0.75rem;
+    padding: 8px 12px;
   }
 
   .btn {
@@ -677,9 +494,6 @@ body {
   .card {
     padding: 1rem;
   }
-
-  .weight-value {
-    font-size: 2rem;
-  }
 }
+
 
