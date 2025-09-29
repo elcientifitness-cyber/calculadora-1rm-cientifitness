@@ -28,13 +28,11 @@ const PERCENTAGE_OBJECTIVES = {
 
 let currentTraditionalData = null;
 let currentRPEData = null;
-let currentSeriesData = null;
 
 document.addEventListener('DOMContentLoaded', function() {
   initializeTabs();
   initializeFormListeners();
   initializeEffortScale();
-  initializeSeriesListeners();
 });
 
 function initializeTabs() {
@@ -60,52 +58,25 @@ function initializeTabs() {
 
 function initializeFormListeners() {
   ['trad-weight', 'trad-reps'].forEach(id => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.addEventListener('input', debounce(() => {
-        const weight = parseFloat(document.getElementById('trad-weight').value);
-        const reps = parseInt(document.getElementById('trad-reps').value);
-        if (weight > 0 && reps > 0 && reps <= 20) {
-          calculateTraditional();
-        }
-      }, 300));
-    }
+    document.getElementById(id).addEventListener('input', debounce(() => {
+      const weight = parseFloat(document.getElementById('trad-weight').value);
+      const reps = parseInt(document.getElementById('trad-reps').value);
+      if (weight > 0 && reps > 0 && reps <= 20) {
+        calculateTraditional();
+      }
+    }, 300));
   });
 
   ['rpe-weight', 'rpe-reps', 'effort-value'].forEach(id => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.addEventListener('input', debounce(() => {
-        const weight = parseFloat(document.getElementById('rpe-weight').value);
-        const reps = parseInt(document.getElementById('rpe-reps').value);
-        const effort = parseFloat(document.getElementById('effort-value').value);
-        if (weight > 0 && reps > 0 && reps <= 10 && effort >= 0) {
-          calculateRPE();
-        }
-      }, 300));
-    }
+    document.getElementById(id).addEventListener('input', debounce(() => {
+      const weight = parseFloat(document.getElementById('rpe-weight').value);
+      const reps = parseInt(document.getElementById('rpe-reps').value);
+      const effort = parseFloat(document.getElementById('effort-value').value);
+      if (weight > 0 && reps > 0 && reps <= 10 && effort >= 0) {
+        calculateRPE();
+      }
+    }, 300));
   });
-}
-
-function initializeSeriesListeners() {
-  ['series-1rm', 'series-reps', 'series-effort', 'increment-size'].forEach(id => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.addEventListener('input', debounce(() => {
-        const oneRM = parseFloat(document.getElementById('series-1rm').value);
-        const reps = parseInt(document.getElementById('series-reps').value);
-        const effort = parseFloat(document.getElementById('series-effort').value);
-        if (oneRM > 0 && reps > 0 && reps <= 10 && effort >= 0) {
-          calculateSeries();
-        }
-      }, 300));
-    }
-  });
-
-  const radioButtons = document.querySelectorAll('input[name="series-scale"]');
-  radioButtons.forEach(radio => radio.addEventListener('change', updateSeriesEffortScale));
-  document.getElementById('series-effort').addEventListener('input', updateSeriesEffortDescription);
-  updateSeriesEffortScale();
 }
 
 function initializeEffortScale() {
@@ -134,49 +105,11 @@ function updateEffortScale() {
   updateEffortDescription();
 }
 
-function updateSeriesEffortScale() {
-  const selectedScale = document.querySelector('input[name="series-scale"]:checked').value;
-  const effortInput = document.getElementById('series-effort');
-  const effortLabel = document.getElementById('series-effort-label');
-
-  if (selectedScale === 'rpe') {
-    effortLabel.textContent = 'Valor RPE (6-10)';
-    effortInput.min = '6';
-    effortInput.max = '10';
-    effortInput.placeholder = 'ej. 8';
-  } else {
-    effortLabel.textContent = 'Valor RIR (0-4)';
-    effortInput.min = '0';
-    effortInput.max = '4';
-    effortInput.placeholder = 'ej. 2';
-  }
-  updateSeriesEffortDescription();
-}
-
 function updateEffortDescription() {
   const selectedScale = document.querySelector('input[name="effort-scale"]:checked').value;
   const effortValue = parseFloat(document.getElementById('effort-value').value);
   const reps = parseInt(document.getElementById('rpe-reps').value) || 1;
   const descriptionElement = document.getElementById('effort-description');
-
-  if (!effortValue && effortValue !== 0) {
-    descriptionElement.textContent = '';
-    return;
-  }
-
-  let rpeValue = selectedScale === 'rpe' ? effortValue : (10 - effortValue);
-  const percentage = getRealPercentage(rpeValue, reps);
-  if (percentage) {
-    const desc = getEffortDescription(rpeValue);
-    descriptionElement.textContent = `${desc} (≈${percentage}% del 1RM con ${reps} reps)`;
-  }
-}
-
-function updateSeriesEffortDescription() {
-  const selectedScale = document.querySelector('input[name="series-scale"]:checked').value;
-  const effortValue = parseFloat(document.getElementById('series-effort').value);
-  const reps = parseInt(document.getElementById('series-reps').value) || 1;
-  const descriptionElement = document.getElementById('series-effort-description');
 
   if (!effortValue && effortValue !== 0) {
     descriptionElement.textContent = '';
@@ -221,10 +154,6 @@ function getEffortDescription(rpe) {
   if (rpe >= 7) return 'Esfuerzo alto';
   if (rpe >= 6.5) return 'Moderado-alto';
   return 'Esfuerzo moderado';
-}
-
-function roundToIncrement(weight, increment) {
-  return Math.round(weight / increment) * increment;
 }
 
 function calculateTraditional() {
@@ -311,114 +240,6 @@ function displayRPEResults(results, exercise) {
   document.getElementById('rpe-results').style.display = 'block';
 }
 
-function calculateSeries() {
-  const oneRM = parseFloat(document.getElementById('series-1rm').value);
-  const reps = parseInt(document.getElementById('series-reps').value);
-  const selectedScale = document.querySelector('input[name="series-scale"]:checked').value;
-  const effortValue = parseFloat(document.getElementById('series-effort').value);
-  const increment = parseFloat(document.getElementById('increment-size').value);
-  
-  if (!oneRM || oneRM <= 0 || !reps || reps <= 0 || reps > 10 || (!effortValue && effortValue !== 0)) {
-    return;
-  }
-
-  const rpeValue = selectedScale === 'rpe' ? effortValue : (10 - effortValue);
-  const percentage = getRealPercentage(rpeValue, reps);
-  
-  if (!percentage) {
-    console.error('No se pudo obtener el porcentaje para RPE', rpeValue, 'y reps', reps);
-    return;
-  }
-
-  const theoreticalWeight = oneRM * (percentage / 100);
-  const adjustedWeight = roundToIncrement(theoreticalWeight, increment);
-  const difference = adjustedWeight - theoreticalWeight;
-
-  const results = {
-    oneRM,
-    reps,
-    selectedScale,
-    effortValue,
-    rpeValue,
-    percentage,
-    theoreticalWeight: Math.round(theoreticalWeight * 10) / 10,
-    adjustedWeight: Math.round(adjustedWeight * 10) / 10,
-    difference: Math.round(difference * 10) / 10,
-    increment
-  };
-
-  currentSeriesData = results;
-  displaySeriesResults(results);
-}
-
-function displaySeriesResults(results) {
-  document.getElementById('series-weight-result').textContent = `${results.adjustedWeight} kg`;
-  document.getElementById('theoretical-weight').textContent = `${results.theoreticalWeight} kg`;
-  document.getElementById('adjusted-weight').textContent = `${results.adjustedWeight} kg`;
-  
-  const diffText = results.difference >= 0 ? `+${results.difference}` : `${results.difference}`;
-  document.getElementById('weight-difference').textContent = `${diffText} kg`;
-
-  const scaleText = results.selectedScale === 'rpe' ? 'RPE' : 'RIR';
-  const effortText = results.selectedScale === 'rpe' ? results.effortValue : (10 - results.rpeValue);
-  
-  document.getElementById('series-parameters').innerHTML = `
-    <strong>🎯 Parámetros:</strong> ${results.reps} reps a ${scaleText} ${effortText} (${results.percentage}% de ${results.oneRM} kg) • 
-    <strong>📏 Redondeo:</strong> Múltiplos de ${results.increment} kg
-  `;
-
-  document.getElementById('weight-info').textContent = `Redondeado a múltiplos de ${results.increment} kg`;
-
-  generateSeriesTable(results);
-  document.getElementById('series-results').style.display = 'block';
-}
-
-function generateSeriesTable(currentResults) {
-  const rpeValues = [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10];
-  const reps = currentResults.reps;
-  const oneRM = currentResults.oneRM;
-  const increment = currentResults.increment;
-
-  let tableHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>RPE</th>
-          <th>RIR</th>
-          <th>% 1RM</th>
-          <th>Peso Teórico</th>
-          <th>Peso Ajustado</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  rpeValues.forEach(rpe => {
-    const rir = 10 - rpe;
-    const percentage = getRealPercentage(rpe, reps);
-    if (percentage) {
-      const theoreticalWeight = oneRM * (percentage / 100);
-      const adjustedWeight = roundToIncrement(theoreticalWeight, increment);
-      
-      const isCurrentRow = Math.abs(rpe - currentResults.rpeValue) < 0.1;
-      const rowClass = isCurrentRow ? 'current-row' : '';
-      
-      tableHTML += `
-        <tr class="${rowClass}">
-          <td><strong>${rpe}</strong></td>
-          <td><strong>${rir}</strong></td>
-          <td>${percentage}%</td>
-          <td>${Math.round(theoreticalWeight * 10) / 10} kg</td>
-          <td><strong>${Math.round(adjustedWeight * 10) / 10} kg</strong></td>
-        </tr>
-      `;
-    }
-  });
-
-  tableHTML += '</tbody></table>';
-  document.getElementById('series-table').innerHTML = tableHTML;
-}
-
 function generatePercentageTable(tableId, primaryRM, compareRM = null) {
   const percentages = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
   let tableHTML = `<table><thead><tr><th>%</th><th>Peso (kg)</th>${compareRM?'<th>Diferencia</th>':''}<th>Objetivo</th></tr></thead><tbody>`;
@@ -452,31 +273,6 @@ function updateComparison() {
   content.innerHTML = `<div class="comparison-results"><h3>📊 Comparación Directa</h3><div class="comparison-summary"><div class="result-comparison-item"><div class="result-info"><span class="result-name">Método Tradicional</span><span class="result-desc">Promedio de 4 fórmulas</span></div><div class="result-value">${tradRM} kg</div></div><div class="result-comparison-item highlight"><div class="result-info"><span class="result-name">Método RPE/RIR (Ajustado)</span><span class="result-desc">Con datos de investigación</span></div><div class="result-value">${rpeRM} kg</div></div><div class="result-comparison-item"><div class="result-info"><span class="result-name">Diferencia</span><span class="result-desc">${diff > 0 ? 'Más conservador' : 'Más agresivo'}</span></div><div class="result-value" style="color: ${diff > 0 ? 'green' : 'red'}">${diff > 0 ? '+' : ''}${diff} kg (${diffPercent > 0 ? '+' : ''}${diffPercent}%)</div></div></div><div class="adjustment-explanation"><h4>💡 Interpretación</h4><p>${diff === 0 ? 'Los métodos muestran resultados muy similares. Ambos son fiables para este cálculo.' : diff > 0 ? `El método RPE/RIR sugiere un 1RM ${Math.abs(diffPercent)}% más alto. Esto indica que el esfuerzo percibido fue más conservador.` : `El método RPE/RIR sugiere un 1RM ${Math.abs(diffPercent)}% más bajo. Esto indica que el esfuerzo fue más intenso de lo esperado.`}</p></div></div>`;
 }
 
-function transferToSeries() {
-  let oneRM = null;
-  
-  if (currentRPEData && currentRPEData.results) {
-    oneRM = currentRPEData.results.adjustedRM;
-  } else if (currentTraditionalData && currentTraditionalData.results) {
-    oneRM = currentTraditionalData.results.average;
-  }
-  
-  if (oneRM) {
-    document.getElementById('series-1rm').value = oneRM;
-    
-    // Cambiar a la pestaña de series
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-    
-    document.querySelector('[data-tab="series"]').classList.add('active');
-    document.getElementById('series').classList.add('active');
-    
-    alert(`1RM transferido: ${oneRM} kg. Completa los demás campos para calcular el peso de la serie.`);
-  } else {
-    alert('Primero calcula el 1RM en las pestañas Tradicional o RPE/RIR');
-  }
-}
-
 function debounce(func, wait) {
   let timeout;
   return function(...args) {
@@ -508,13 +304,10 @@ function clearAll() {
   });
   document.getElementById('trad-results').style.display = 'none';
   document.getElementById('rpe-results').style.display = 'none';
-  document.getElementById('series-results').style.display = 'none';
   currentTraditionalData = null;
   currentRPEData = null;
-  currentSeriesData = null;
   document.getElementById('effort-description').textContent = '';
-  document.getElementById('series-effort-description').textContent = '';
   updateEffortScale();
-  updateSeriesEffortScale();
   alert('Todos los datos han sido limpiados');
 }
+
