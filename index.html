@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculadora 1RM - CientiFitness</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <div class="logo-container">
+                <div class="logo">CientiFitness</div>
+                <p class="tagline">Calculadora de 1RM Científica</p>
+            </div>
+        </header>
+
+        <nav class="tabs-nav">
+            <button class="tab-btn active" data-tab="tradicional">Tradicional</button>
+            <button class="tab-btn" data-tab="rpe">RPE/RIR</button>
+            <button class="tab-btn" data-tab="comparacion">Comparación</button>
+            <button class="tab-btn" data-tab="info">Información</button>
+        </nav>
+
+        <main class="tabs-content">
+
+            <!-- Pestaña Tradicional -->
+            <div id="tradicional" class="tab-content active">
+                <div class="calculator-container">
+                    <h2>Calculadora Tradicional 1RM</h2>
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label class="form-label">Ejercicio</label>
+                            <select id="exercise-traditional" class="form-control">
+                                <option value="Press Banca">Press Banca</option>
+                                <option value="Sentadilla">Sentadilla</option>
+                                <option value="Peso Muerto">Peso Muerto</option>
+                                <option value="Press Militar">Press Militar</option>
+                                <option value="Remo con Barra">Remo con Barra</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="trad-weight" class="form-label">Peso Levantado (kg)</label>
+                            <input type="number" id="trad-weight" class="form-control" min="1" step="0.5" placeholder="ej. 100" />
+                        </div>
+                        <div class="form-group">
+                            <label for="trad-reps" class="form-label">Repeticiones Realizadas</label>
+                            <input type="number" id="trad-reps" class="form-control" min="1" max="20" placeholder="ej. 5" />
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateTraditional()">Calcular 1RM</button>
+                </div>
+
+                <div class="results-section" id="trad-results" style="display: none;">
+                    <div class="card">
+                        <h3>Resultados - Método Tradicional</h3>
+                        <div id="trad-exercise-info" class="exercise-info"></div>
+                        <div class="results-grid">
+                            <div class="result-item">
+                                <div class="result-info">
+                                    <span class="result-name">Brzycki (1993)</span>
+                                    <span class="result-desc">Más precisa para 2-10 reps</span>
+                                </div>
+                                <div class="result-value" id="brzycki-result">0 kg</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-info">
+                                    <span class="result-name">Epley (1985)</span>
+                                    <span class="result-desc">Más precisa para 1-6 reps</span>
+                                </div>
+                                <div class="result-value" id="epley-result">0 kg</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-info">
+                                    <span class="result-name">Lombardi</span>
+                                    <span class="result-desc">Mejor para 8-15 reps</span>
+                                </div>
+                                <div class="result-value" id="lombardi-result">0 kg</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-info">
+                                    <span class="result-name">O'Conner</span>
+                                    <span class="result-desc">Buena para reps moderadas</span>
+                                </div>
+                                <div class="result-value" id="oconner-result">0 kg</div>
+                            </div>
+                            <div class="result-item highlight">
+                                <div class="result-info">
+                                    <span class="result-name">PROMEDIO</span>
+                                    <span class="result-desc">Recomendado</span>
+                                </div>
+                                <div class="result-value" id="average-result">0 kg</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Tabla de Porcentajes</h3>
+                        <div class="percentage-table" id="trad-percentage-table"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña RPE -->
+            <div id="rpe" class="tab-content">
+                <div class="calculator-container">
+                    <h2>Método RPE/RIR</h2>
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label for="rpe-weight" class="form-label">Peso Levantado (kg)</label>
+                            <input type="number" id="rpe-weight" class="form-control" min="1" step="0.5" placeholder="ej. 100" />
+                        </div>
+                        <div class="form-group">
+                            <label for="rpe-reps" class="form-label">Repeticiones Realizadas</label>
+                            <input type="number" id="rpe-reps" class="form-control" min="1" max="10" placeholder="ej. 5" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Escala de Esfuerzo</label>
+                            <div class="radio-group">
+                                <label class="radio-option"><input type="radio" name="effort-scale" value="rpe" checked /> RPE (Rate of Perceived Exertion)</label>
+                                <label class="radio-option"><input type="radio" name="effort-scale" value="rir" /> RIR (Repetitions in Reserve)</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="effort-value" id="effort-label" class="form-label">Valor RPE (6-10)</label>
+                            <input type="number" id="effort-value" class="form-control" min="6" max="10" step="0.5" placeholder="ej. 8" />
+                            <div id="effort-description" class="effort-description"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="rpe-exercise" class="form-label">Ejercicio</label>
+                            <select id="rpe-exercise" class="form-control">
+                                <option value="">Seleccionar ejercicio</option>
+                                <option value="Press Banca">Press Banca</option>
+                                <option value="Sentadilla">Sentadilla</option>
+                                <option value="Peso Muerto">Peso Muerto</option>
+                                <option value="Press Militar">Press Militar</option>
+                                <option value="Remo con Barra">Remo con Barra</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateRPE()">Calcular 1RM con RPE/RIR</button>
+                </div>
+
+                <div class="card info-card">
+                    <h3>Tabla de Equivalencias RPE ↔ RIR (Datos Actualizados)</h3>
+                    <p class="table-note"><strong>💡 Importante:</strong> Los porcentajes varían según las repeticiones realizadas.</p>
+                    <div class="equivalence-table-container">
+                        <table class="equivalence-table">
+                            <thead>
+                                <tr><th>RPE</th><th>RIR</th><th>1 Rep</th><th>3 Reps</th><th>5 Reps</th><th>8 Reps</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>10</td><td>0</td><td>100%</td><td>92.2%</td><td>86.3%</td><td>78.6%</td></tr>
+                                <tr><td>9</td><td>1</td><td>95.5%</td><td>89.2%</td><td>83.7%</td><td>76.2%</td></tr>
+                                <tr><td>8</td><td>2</td><td>92.2%</td><td>86.3%</td><td>81.1%</td><td>73.9%</td></tr>
+                                <tr><td>7</td><td>3</td><td>89.2%</td><td>83.7%</td><td>78.6%</td><td>70.7%</td></tr>
+                                <tr><td>6</td><td>4</td><td>86.3%</td><td>81.1%</td><td>76.2%</td><td>68.0%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="results-section" id="rpe-results" style="display: none;">
+                    <div class="card">
+                        <h3>Resultados - Método RPE/RIR</h3>
+                        <div id="rpe-exercise-info" class="exercise-info"></div>
+                        <div id="rpe-effort-info" class="effort-info"></div>
+                        <div class="results-comparison">
+                            <div class="result-comparison-item">
+                                <div class="result-info">
+                                    <span class="result-name">1RM Base (Tradicional)</span>
+                                    <span class="result-desc">Sin ajuste de esfuerzo</span>
+                                </div>
+                                <div class="result-value" id="rpe-base-result">0 kg</div>
+                            </div>
+                            <div class="result-comparison-item highlight">
+                                <div class="result-info">
+                                    <span class="result-name">1RM Ajustado (RPE/RIR)</span>
+                                    <span class="result-desc" id="rpe-adjustment-info">Ajustado por esfuerzo percibido</span>
+                                </div>
+                                <div class="result-value" id="rpe-adjusted-result">0 kg</div>
+                            </div>
+                            <div class="adjustment-explanation" id="adjustment-explanation"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Tabla de Porcentajes - RPE/RIR</h3>
+                        <div class="percentage-table" id="rpe-percentage-table"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Comparación -->
+            <div id="comparacion" class="tab-content">
+                <div class="card">
+                    <h2>Comparación de Métodos</h2>
+                    <div id="comparison-content">
+                        <div class="comparison-placeholder">
+                            <p>💡 Realiza cálculos en ambos métodos para ver la comparación detallada</p>
+                            <div class="method-comparison">
+                                <div class="method-card">
+                                    <h4>📊 Método Tradicional</h4>
+                                    <ul>
+                                        <li>✅ Objetivo y reproducible</li>
+                                        <li>✅ No requiere experiencia previa</li>
+                                        <li>✅ Fácil de aplicar</li>
+                                        <li>❌ No considera el esfuerzo real del atleta</li>
+                                        <li>❌ Menos preciso para atletas experimentados</li>
+                                    </ul>
+                                </div>
+                                <div class="method-card">
+                                    <h4>🎯 Método RPE/RIR</h4>
+                                    <ul>
+                                        <li>✅ Autorregulación del entrenamiento</li>
+                                        <li>✅ Más preciso para atletas experimentados</li>
+                                        <li>✅ Considera variaciones diarias</li>
+                                        <li>❌ Requiere experiencia y honestidad</li>
+                                        <li>❌ Subjetivo</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Información -->
+            <div id="info" class="tab-content">
+                <div class="card">
+                    <h2>Guía Completa RPE y RIR</h2>
+                    <div class="info-grid">
+                        <div class="info-box blue-box">
+                            <h3>¿Qué es RPE?</h3>
+                            <p><strong>RPE (Rate of Perceived Exertion)</strong> es una escala subjetiva del 1 al 10 que mide la intensidad del esfuerzo percibido durante el ejercicio.</p>
+                            <h4>Historia y Desarrollo</h4>
+                            <p>Desarrollada originalmente por Gunnar Borg para medir esfuerzo cardiovascular, fue adaptada al entrenamiento de fuerza por investigadores como Mike Tuchscherer.</p>
+                            <h4>Ejemplo Práctico</h4>
+                            <blockquote><strong>RPE 8:</strong> "Esfuerzo muy intenso - Siento que podría hacer exactamente 2 repeticiones más antes del fallo"</blockquote>
+                        </div>
+                        <div class="info-box green-box">
+                            <h3>¿Qué es RIR?</h3>
+                            <p><strong>RIR (Repetitions in Reserve)</strong> es el número exacto de repeticiones que podrías realizar antes del fallo muscular.</p>
+                            <h4>Ventaja Principal</h4>
+                            <p>Más intuitivo para atletas al pensar directamente en repeticiones restantes en lugar de una escala abstracta.</p>
+                            <h4>Ejemplo Práctico</h4>
+                            <blockquote><strong>RIR 2:</strong> "Me quedan exactamente 2 repeticiones antes de llegar al fallo muscular"</blockquote>
+                        </div>
+                    </div>
+                    <div class="comparative-summary">
+                        <h3>¿Cómo se relacionan RPE y RIR?</h3>
+                        <p>Para novatos, <strong>RPE 9 suele equivaler a RIR 0</strong>, es decir, sentir un esfuerzo muy alto que prácticamente no deja repeticiones en reserva.</p>
+                        <p>Con la experiencia, se aprende a interpretar más finamente estas escalas para autorregular el entrenamiento.</p>
+                    </div>
+                    <div class="usage-section">
+                        <h3>¿Cuándo usar cada método?</h3>
+                        <div class="usage-grid">
+                            <div class="usage-box blue-usage">
+                                <h4>Ventajas del RPE</h4>
+                                <ul>
+                                    <li>Familiar para atletas que usan escalas numéricas</li>
+                                    <li>Consistente con otras escalas de esfuerzo percibido</li>
+                                    <li>Amplia aplicación en entrenamiento avanzado</li>
+                                    <li>Ideal para autorregulación fina</li>
+                                </ul>
+                            </div>
+                            <div class="usage-box green-usage">
+                                <h4>Ventajas del RIR</h4>
+                                <ul>
+                                    <li>Más intuitivo para principiantes</li>
+                                    <li>Se enfoca en repeticiones restantes claras</li>
+                                    <li>Fácil de entender y aplicar</li>
+                                    <li>Útil para entrenadores educando a novatos</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="recommendations-grid">
+                            <div class="recommendation-item">
+                                <h4>Principiantes</h4>
+                                <p>Comenzar con RIR para aprender a sentir esfuerzo y luego introducir RPE.</p>
+                            </div>
+                            <div class="recommendation-item">
+                                <h4>Intermedios</h4>
+                                <p>Combinar ambos métodos según comodidad y contexto.</p>
+                            </div>
+                            <div class="recommendation-item">
+                                <h4>Avanzados</h4>
+                                <p>Usar RPE para control fino y ambos métodos según preferencia.</p>
+                            </div>
+                            <div class="recommendation-item">
+                                <h4>Entrenadores</h4>
+                                <p>Enseñar ambos para mejorar la percepción del esfuerzo y resultados.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-card">
+                        <h3>Tabla Completa de Equivalencias</h3>
+                        <table class="equivalence-table">
+                            <thead>
+                                <tr><th>RPE</th><th>RIR</th><th>% 1RM</th><th>Descripción del Esfuerzo</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>6</td><td>4</td><td>80%</td><td>Esfuerzo moderado</td></tr>
+                                <tr><td>6.5</td><td>3.5</td><td>82.5%</td><td>Esfuerzo moderado-alto</td></tr>
+                                <tr><td>7</td><td>3</td><td>85%</td><td>Esfuerzo alto</td></tr>
+                                <tr><td>7.5</td><td>2.5</td><td>87.5%</td><td>Esfuerzo alto-muy alto</td></tr>
+                                <tr><td>8</td><td>2</td><td>90%</td><td>Esfuerzo muy alto</td></tr>
+                                <tr><td>8.5</td><td>1.5</td><td>92.5%</td><td>Esfuerzo muy alto-máximo</td></tr>
+                                <tr><td>9</td><td>1</td><td>95%</td><td>Esfuerzo casi máximo</td></tr>
+                                <tr><td>9.5</td><td>0.5</td><td>97.5%</td><td>Esfuerzo prácticamente máximo</td></tr>
+                                <tr><td>10</td><td>0</td><td>100%</td><td>Esfuerzo máximo/fallo</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="update-note">Nota: Los porcentajes varían según número de repeticiones, esta tabla muestra intensidad para 1RM.</p>
+                    </div>
+                    <div class="update-banner">
+                        <p>🔄 Datos actualizados septiembre 2025 basados en evidencia científica y tablas reales.</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="clearAll()">🗑️ Limpiar Todo</button>
+            <button class="btn btn-info" onclick="syncData()">🔄 Sincronizar Datos</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
