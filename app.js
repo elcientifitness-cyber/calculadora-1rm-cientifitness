@@ -310,4 +310,70 @@ function clearAll() {
   updateEffortScale();
   alert('Todos los datos han sido limpiados');
 }
+// Datos globales
+let microcycles = [];
+
+// Función para añadir microciclo
+function addMicrocycle() {
+    const name = document.getElementById('microcycle-name').value.trim();
+    const muscle = document.getElementById('muscle-group').value;
+    const exercise = document.getElementById('exercise-name').value.trim();
+    const seriesRaw = document.getElementById('series-info').value.trim();
+
+    if (!name || !exercise || !seriesRaw) {
+        alert("Completa todos los campos.");
+        return;
+    }
+
+    const seriesArray = seriesRaw.split(',').map(s => {
+        const [reps, weight, rpe] = s.split('x').map(Number);
+        return { reps, weight, rpe };
+    });
+
+    microcycles.push({ name, muscle, exercise, series: seriesArray });
+    renderMicrocycles();
+    renderTrendChart();
+}
+
+// Mostrar resumen
+function renderMicrocycles() {
+    const container = document.getElementById('microcycle-summary');
+    container.innerHTML = '';
+    microcycles.forEach(m => {
+        let totalTon = m.series.reduce((acc, s) => acc + s.reps * s.weight, 0);
+        let avgRIR = m.series.reduce((acc, s) => acc + (10 - s.rpe), 0) / m.series.length;
+        let max1RM = Math.max(...m.series.map(s => s.weight / (1 - s.reps * 0.033))); // Epley
+        const div = document.createElement('div');
+        div.classList.add('result-item');
+        div.innerHTML = `
+            <strong>${m.name} - ${m.exercise} (${m.muscle})</strong><br>
+            Máx 1RM: ${max1RM.toFixed(1)} kg | Tonelaje: ${totalTon} kg | RIR medio: ${avgRIR.toFixed(1)}
+        `;
+        container.appendChild(div);
+    });
+}
+
+// Gráfico de tendencia usando Chart.js
+function renderTrendChart() {
+    const ctx = document.getElementById('trend-chart').getContext('2d');
+    const labels = microcycles.map(m => m.name + ' - ' + m.exercise);
+    const max1RM = microcycles.map(m => Math.max(...m.series.map(s => s.weight / (1 - s.reps * 0.033))));
+    const avgRIR = microcycles.map(m => m.series.reduce((acc, s) => acc + (10 - s.rpe), 0) / m.series.length);
+    const tonnage = microcycles.map(m => m.series.reduce((acc, s) => acc + s.reps * s.weight, 0));
+
+    if (window.trendChart) window.trendChart.destroy(); // Reset si existe
+
+    window.trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                { label: 'Máx 1RM', data: max1RM, borderColor: 'rgba(33,128,141,1)', fill: false },
+                { label: 'RIR medio', data: avgRIR, borderColor: 'rgba(230,129,97,1)', fill: false },
+                { label: 'Tonelaje total', data: tonnage, borderColor: 'rgba(192,21,47,1)', fill: false }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: { y:
 
