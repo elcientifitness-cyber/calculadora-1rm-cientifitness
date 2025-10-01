@@ -29,7 +29,7 @@
         <!-- Contenido de pestañas -->
         <main class="tabs-content">
 
-            <!-- Tradicional -->
+            <!-- Pestaña Tradicional -->
             <div id="tradicional" class="tab-content active">
                 <div class="calculator-container">
                     <h2>Calculadora Tradicional 1RM</h2>
@@ -54,35 +54,11 @@
                             <input type="number" id="trad-reps" class="form-control" min="1" max="20" placeholder="ej. 5" />
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="calculateTraditional()">Calcular 1RM</button>
-                    <div class="results-section" id="trad-results" style="display:none;">
-                        <div class="card">
-                            <h3>Resultados - Método Tradicional</h3>
-                            <div id="trad-exercise-info" class="exercise-info"></div>
-                            <div class="results-grid">
-                                <div class="result-item">
-                                    <div class="result-info">Brzycki (1993)</div>
-                                    <div class="result-value" id="brzycki-result">0 kg</div>
-                                </div>
-                                <div class="result-item">
-                                    <div class="result-info">Epley (1985)</div>
-                                    <div class="result-value" id="epley-result">0 kg</div>
-                                </div>
-                                <div class="result-item">
-                                    <div class="result-info">Lombardi</div>
-                                    <div class="result-value" id="lombardi-result">0 kg</div>
-                                </div>
-                                <div class="result-item highlight">
-                                    <div class="result-info">PROMEDIO</div>
-                                    <div class="result-value" id="average-result">0 kg</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="btn btn-primary" onclick="alert('Función Tradicional aún por implementar')">Calcular 1RM</button>
                 </div>
             </div>
 
-            <!-- RPE/RIR -->
+            <!-- Pestaña RPE -->
             <div id="rpe" class="tab-content">
                 <div class="calculator-container">
                     <h2>Método RPE/RIR</h2>
@@ -103,27 +79,15 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="effort-value" id="effort-label" class="form-label">Valor (6-10)</label>
+                            <label for="effort-value" id="effort-label" class="form-label">Valor RPE (6-10)</label>
                             <input type="number" id="effort-value" class="form-control" min="6" max="10" step="0.5" placeholder="ej. 8" />
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="calculateRPE()">Calcular 1RM con RPE/RIR</button>
-                    <div class="results-section" id="rpe-results" style="display:none;">
-                        <div class="card">
-                            <h3>Resultados - Método RPE/RIR</h3>
-                            <div id="rpe-exercise-info"></div>
-                            <div class="results-comparison">
-                                <div class="result-comparison-item highlight">
-                                    <div class="result-info">1RM Ajustado (RPE/RIR)</div>
-                                    <div class="result-value" id="rpe-adjusted-result">0 kg</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="btn btn-primary" onclick="alert('Función RPE aún por implementar')">Calcular 1RM con RPE/RIR</button>
                 </div>
             </div>
 
-            <!-- Comparación -->
+            <!-- Pestaña Comparación -->
             <div id="comparacion" class="tab-content">
                 <div class="card">
                     <h2>Comparación de Métodos</h2>
@@ -131,17 +95,17 @@
                 </div>
             </div>
 
-            <!-- Microciclos -->
+            <!-- Pestaña Microciclos -->
             <div id="microciclos" class="tab-content">
                 <div class="card">
                     <h2>Registro de Microciclos y Series</h2>
                     <div class="form-section">
                         <div class="form-group">
-                            <label for="microcycle-name">Nombre Microciclo</label>
-                            <input type="text" id="microcycle-name" class="form-control" placeholder="ej. Semana 1">
+                            <label for="microcycle-name" class="form-label">Nombre Microciclo</label>
+                            <input type="text" id="microcycle-name" class="form-control" placeholder="ej. Semana 1" />
                         </div>
                         <div class="form-group">
-                            <label for="muscle-group">Grupo Muscular</label>
+                            <label for="muscle-group" class="form-label">Grupo Muscular</label>
                             <select id="muscle-group" class="form-control">
                                 <option value="Pecho">Pecho</option>
                                 <option value="Espalda">Espalda</option>
@@ -151,46 +115,4 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="exercise-name">Ejercicio</label>
-                            <input type="text" id="exercise-name" class="form-control" placeholder="ej. Press Banca">
-                        </div>
-                        <div class="form-group">
-                            <label for="series-info">Series (Reps x Peso x RPE)</label>
-                            <input type="text" id="series-info" class="form-control" placeholder="ej. 5x100x8,4x105x7">
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" onclick="addMicrocycle()">Añadir Microciclo</button>
-                </div>
-                <div class="card">
-                    <h3>Resumen Microciclos</h3>
-                    <div id="microcycle-summary"></div>
-                </div>
-                <div class="card">
-                    <h3>Gráfico de Tendencia</h3>
-                    <canvas id="trend-chart" width="400" height="200"></canvas>
-                </div>
-            </div>
-
-            <!-- Información -->
-            <div id="info" class="tab-content">
-                <div class="card">
-                    <h2>Guía RPE y RIR</h2>
-                    <p>Esta sección contiene información sobre cómo interpretar RPE y RIR.</p>
-                </div>
-            </div>
-        </main>
-
-        <div class="action-buttons">
-            <button class="btn btn-secondary" onclick="location.reload()">🗑️ Limpiar Todo</button>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
-</body>
-</html>
-
-
-
-
-
-                     
+                            <label for="exercise-name" class="form-label">Ejercicio</label>
